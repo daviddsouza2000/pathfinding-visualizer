@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Node from './Node/Node';
-import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijkstra';
+import { dijkstra, getNodesInShortestPathOrderDijkstra } from '../algorithms/dijkstra';
+import { bfs, getNodesInShortestPathOrderBfs } from '../algorithms/bfs';
+import { dfs, getNodesInShortestPathOrderDfs } from '../algorithms/dfs';
 
 import './PathfindingVisualizer.css';
 
-const START_NODE_ROW = 10;
+const START_NODE_ROW = 8;
 const START_NODE_COL = 15;
 const FINISH_NODE_ROW = 10;
 const FINISH_NODE_COL = 35;
+
+const GRID_ROWS = 20;
+const GRID_COLS = 50;
 
 export default function PathfindingVisualizer() {
     const [grid, setGrid] = useState([]);
@@ -64,11 +69,32 @@ export default function PathfindingVisualizer() {
     }
 
     const visualizeDijkstra = () => {
+        if(!canDraw) return;
         setCanDraw(false);
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrderDijkstra(finishNode);
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    }
+
+    const visualizeBfs = () => {
+        if(!canDraw) return;
+        setCanDraw(false);
+        const startNode = grid[START_NODE_ROW][START_NODE_COL];
+        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+        const visitedNodesInOrder = bfs(grid, startNode, finishNode);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrderBfs(finishNode);
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    }
+
+    const visualizeDfs = () => {
+        if(!canDraw) return;
+        setCanDraw(false);
+        const startNode = grid[START_NODE_ROW][START_NODE_COL];
+        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+        const visitedNodesInOrder = dfs(grid, startNode, finishNode);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrderDfs(finishNode);
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
@@ -86,6 +112,12 @@ export default function PathfindingVisualizer() {
                     <div className="dropdown-content">
                         <button onClick={() => visualizeDijkstra()}>
                             Dijkstra's Algorithm
+                        </button>
+                        <button onClick={() => visualizeBfs()}>
+                            Breadth First Search
+                        </button>
+                        <button onClick={() => visualizeDfs()}>
+                            Depth First Search
                         </button>
                     </div>
                 </div>
@@ -126,9 +158,9 @@ export default function PathfindingVisualizer() {
 
 const getInitialGrid = () => {
     const grid = [];
-    for (let row = 0; row < 20; row++) {
+    for (let row = 0; row < GRID_ROWS; row++) {
         const currentRow = [];
-        for (let col = 0; col < 50; col++) {
+        for (let col = 0; col < GRID_COLS; col++) {
             currentRow.push(createNode(col, row));
         }
         grid.push(currentRow);

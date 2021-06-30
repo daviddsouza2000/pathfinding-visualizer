@@ -6,13 +6,11 @@
 }
 
 .node-finish {
-  background-image: url(../../clipart-bullseye-clipart.png);
-  background-size: 25px 25px; /* is set to 25px because .node is the same dimensions */
+  content: url(../../clipart-bullseye-clipart.png);
 }
 
 .node-start {
-  background-image: url(../../chevron.png);
-  background-size: 25px 25px; /* is set to 25px because .node is the same dimensions */
+  content: url(../../chevron.png);
 }
 
 .node-visited {
