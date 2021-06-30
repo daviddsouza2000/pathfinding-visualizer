@@ -6,11 +6,13 @@
 }
 
 .node-finish {
-  content: url(../../clipart-bullseye-clipart.png);
+  background-image: url(../../clipart-bullseye-clipart.png);
+  background-size: 25px 25px;
 }
 
 .node-start {
-  content: url(../../chevron.png);
+  background-image: url(../../chevron.png);
+  background-size: 25px 25px;
 }
 
 .node-visited {
