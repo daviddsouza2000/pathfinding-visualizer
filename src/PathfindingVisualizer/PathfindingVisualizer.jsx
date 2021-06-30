@@ -6,10 +6,10 @@ import { dfs, getNodesInShortestPathOrderDfs } from '../algorithms/dfs';
 
 import './PathfindingVisualizer.css';
 
-const START_NODE_ROW = 8;
-const START_NODE_COL = 15;
-const FINISH_NODE_ROW = 10;
-const FINISH_NODE_COL = 35;
+var START_NODE_ROW = 8;
+var START_NODE_COL = 15;
+var FINISH_NODE_ROW = 10;
+var FINISH_NODE_COL = 35;
 
 const GRID_ROWS = 20;
 const GRID_COLS = 50;
@@ -18,6 +18,8 @@ export default function PathfindingVisualizer() {
     const [grid, setGrid] = useState([]);
     const [mouseIsPressed, setMouseIsPressed] = useState(false);
     const [canDraw, setCanDraw] = useState(true); // true if visualizer is run/ already ran to disable creating walls
+    const [movingStartNode, setMovingStartNode] = useState(false); // if user is moving start node
+    const [movingFinishNode, setMovingFinishNode] = useState(false); // if user is moving finish node
 
     useEffect(() => {
         const newGrid = getInitialGrid();
@@ -26,19 +28,41 @@ export default function PathfindingVisualizer() {
 
     const handleMouseDown = (row, col) => {
         if(!canDraw) return;
-        const newGrid = getNewGridWithWallToggled(grid, row, col);
-        setGrid(newGrid);
+
+        if (row === START_NODE_ROW && col === START_NODE_COL) {
+            setMovingStartNode(true);
+        }
+        else if (row === FINISH_NODE_ROW && col === FINISH_NODE_COL) {
+            setMovingFinishNode(true);
+        }
+        else {
+            const newGrid = getNewGridWithWallToggled(grid, row, col);
+            setGrid(newGrid);
+        }
         setMouseIsPressed(true);
     }
 
     const handleMouseEnter = (row, col) => {
         if (!canDraw) return;
         if (!mouseIsPressed) return;
-        const newGrid = getNewGridWithWallToggled(grid, row, col);
-        setGrid(newGrid);
+
+        if (movingStartNode) {
+            const newGrid = getNewGridWithStartNodeToggled(grid, row, col);
+            setGrid(newGrid);
+        }
+        else if (movingFinishNode) {
+            const newGrid = getNewGridWithFinishNodeToggled(grid, row, col);
+            setGrid(newGrid);
+        }
+        else {
+            const newGrid = getNewGridWithWallToggled(grid, row, col);
+            setGrid(newGrid);
+        }
     }
 
     const handleMouseUp = () => {
+        setMovingStartNode(false);
+        setMovingFinishNode(false);
         setMouseIsPressed(false);
     }
 
@@ -191,3 +215,49 @@ const getNewGridWithWallToggled = (grid, row, col) => {
     newGrid[row][col] = newNode;
     return newGrid;
 };
+
+const getNewGridWithStartNodeToggled = (grid, row, col) => {
+    const newGrid = grid.slice();
+    const node = newGrid[START_NODE_ROW][START_NODE_COL];
+    const newNode = {
+        ...node,
+        isStart: false,
+    };
+    newGrid[START_NODE_ROW][START_NODE_COL] = newNode;
+
+    START_NODE_COL = col;
+    START_NODE_ROW = row;
+
+    const node2 = newGrid[START_NODE_ROW][START_NODE_COL];
+    const newNode2 = {
+        ...node2,
+        isStart: true,
+        isWall: false,
+    };
+    newGrid[START_NODE_ROW][START_NODE_COL] = newNode2;
+
+    return newGrid;
+}
+
+const getNewGridWithFinishNodeToggled = (grid, row, col) => {
+    const newGrid = grid.slice();
+    const node = newGrid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const newNode = {
+        ...node,
+        isFinish: false,
+    };
+    newGrid[FINISH_NODE_ROW][FINISH_NODE_COL] = newNode;
+
+    FINISH_NODE_COL = col;
+    FINISH_NODE_ROW = row;
+
+    const node2 = newGrid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const newNode2 = {
+        ...node2,
+        isFinish: true,
+        isWall: false,
+    };
+    newGrid[FINISH_NODE_ROW][FINISH_NODE_COL] = newNode2;
+
+    return newGrid;
+}
