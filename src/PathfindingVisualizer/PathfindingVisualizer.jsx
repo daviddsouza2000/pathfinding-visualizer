@@ -12,6 +12,7 @@ const FINISH_NODE_COL = 35;
 export default function PathfindingVisualizer() {
     const [grid, setGrid] = useState([]);
     const [mouseIsPressed, setMouseIsPressed] = useState(false);
+    const [canDraw, setCanDraw] = useState(true); // true if visualizer is run/ already ran to disable creating walls
 
     useEffect(() => {
         const newGrid = getInitialGrid();
@@ -19,12 +20,14 @@ export default function PathfindingVisualizer() {
     }, []);
 
     const handleMouseDown = (row, col) => {
+        if(!canDraw) return;
         const newGrid = getNewGridWithWallToggled(grid, row, col);
         setGrid(newGrid);
         setMouseIsPressed(true);
     }
 
     const handleMouseEnter = (row, col) => {
+        if (!canDraw) return;
         if (!mouseIsPressed) return;
         const newGrid = getNewGridWithWallToggled(grid, row, col);
         setGrid(newGrid);
@@ -61,6 +64,7 @@ export default function PathfindingVisualizer() {
     }
 
     const visualizeDijkstra = () => {
+        setCanDraw(false);
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
         const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
@@ -68,17 +72,33 @@ export default function PathfindingVisualizer() {
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
+    const clearGrid = () => {
+        window.location.reload();
+    }
+
     return (
         <>
-            <button onClick={() => visualizeDijkstra()}>
-                Visualize Dijkstra's Algorithm
-            </button>
+            <nav className="navbar">
+                <div className="dropdown">
+                    <button className="dropbtn">Visualize Pathfinding Algorithm  
+                    <i className="fa fa-caret-down"></i>
+                    </button>
+                    <div className="dropdown-content">
+                        <button onClick={() => visualizeDijkstra()}>
+                            Dijkstra's Algorithm
+                        </button>
+                    </div>
+                </div>
+                <button className="clearButton" onClick={() => clearGrid()}>Clear</button>
+            </nav>
+            <br />
+
             <div className="grid">
                 {grid.map((row, rowIdx) => {
                     return (
                         <div key={rowIdx}>
                             {row.map((node, nodeIdx) => {
-                                const { row, col, isFinish, isStart, isWall } = node;
+                                const { row, col, isFinish, isStart, isWall, isVisited } = node;
                                 return (
                                     <Node
                                         key={nodeIdx}
@@ -86,6 +106,7 @@ export default function PathfindingVisualizer() {
                                         isFinish={isFinish}
                                         isStart={isStart}
                                         isWall={isWall}
+                                        isVisited={isVisited}
                                         mouseIsPressed={mouseIsPressed}
                                         onMouseDown={(row, col) => handleMouseDown(row, col)}
                                         onMouseEnter={(row, col) =>
