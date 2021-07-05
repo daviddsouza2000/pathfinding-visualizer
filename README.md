@@ -1,5 +1,7 @@
 # Pathfinding Visualizer
 
+Link to project: <https://daviddsouza2000.github.io/pathfinding-visualizer/>
+
 Pathfinding Visualizer project based on [Clement's Youtube Video](https://www.youtube.com/watch?v=msttfIHHkak).
 
 # Getting Started with Create React App
