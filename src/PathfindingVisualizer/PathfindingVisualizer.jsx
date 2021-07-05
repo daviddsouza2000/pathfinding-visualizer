@@ -3,6 +3,7 @@ import Node from './Node/Node';
 import { dijkstra, getNodesInShortestPathOrderDijkstra } from '../algorithms/dijkstra';
 import { bfs, getNodesInShortestPathOrderBfs } from '../algorithms/bfs';
 import { dfs, getNodesInShortestPathOrderDfs } from '../algorithms/dfs';
+import { astar, getNodesInShortestPathOrderAstar} from '../algorithms/astar';
 
 import './PathfindingVisualizer.css';
 
@@ -120,6 +121,16 @@ export default function PathfindingVisualizer() {
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
+    const visualizeAStar = () => {
+        if(!canDraw) return;
+        setCanDraw(false);
+        const startNode = grid[START_NODE_ROW][START_NODE_COL];
+        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+        const visitedNodesInOrder = astar(grid, startNode, finishNode);
+        const nodesInShortestPathOrder = getNodesInShortestPathOrderAstar(finishNode);
+        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    }
+
     const clearGrid = () => {
         window.location.reload();
     }
@@ -140,6 +151,9 @@ export default function PathfindingVisualizer() {
                         </button>
                         <button onClick={() => visualizeDfs()}>
                             Depth First Search
+                        </button>
+                        <button onClick={() => visualizeAStar()}>
+                            A* Algorithm
                         </button>
                     </div>
                 </div>
