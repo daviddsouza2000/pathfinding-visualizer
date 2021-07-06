@@ -13,7 +13,7 @@ var FINISH_NODE_ROW = 10;
 var FINISH_NODE_COL = 35;
 
 const GRID_ROWS = 20;
-const GRID_COLS = 50;
+const GRID_COLS = 40;
 
 export default function PathfindingVisualizer() {
     const [grid, setGrid] = useState([]);
@@ -131,8 +131,17 @@ export default function PathfindingVisualizer() {
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
-    const clearGrid = () => {
-        window.location.reload();
+    const clearGrid = (clearWalls=false) => {
+        setCanDraw(true);
+        const newGrid = clearWalls ? getInitialGrid() : getInitialGridWithWalls(grid);
+        setGrid(newGrid);
+        for (let row = 0; row < GRID_ROWS; row++) {
+            for (let col = 0; col < GRID_COLS; col++) {
+                const node = document.getElementById(`node-${row}-${col}`);
+                node.classList.remove('node-visited');
+                node.classList.remove('node-shortest-path');
+            }
+        }
     }
 
     return (
@@ -157,7 +166,8 @@ export default function PathfindingVisualizer() {
                         </button>
                     </div>
                 </div>
-                <button className="clearButton" onClick={() => clearGrid()}>Clear</button>
+                <button className="clearButton" onClick={() => clearGrid()}>Clear Path</button>
+                <button className="clearButton" onClick={() => clearGrid(true)}>Clear Path and Walls</button>
             </nav>
             <br />
 
@@ -204,7 +214,7 @@ const getInitialGrid = () => {
     return grid;
 };
 
-const createNode = (col, row) => {
+const createNode = (col, row, isWall = false) => {
     return {
         col,
         row,
@@ -212,7 +222,7 @@ const createNode = (col, row) => {
         isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
         distance: Infinity,
         isVisited: false,
-        isWall: false,
+        isWall,
         previousNode: null,
     };
 };
@@ -273,3 +283,17 @@ const getNewGridWithFinishNodeToggled = (grid, row, col) => {
 
     return newGrid;
 }
+
+const getInitialGridWithWalls = (grid) => {
+    const newGrid = [];
+    var nodeIsWall = false;
+    for (let row = 0; row < GRID_ROWS; row++) {
+        const currentRow = [];
+        for (let col = 0; col < GRID_COLS; col++) {
+            nodeIsWall = grid[row][col].isWall
+            currentRow.push(createNode(col, row, nodeIsWall));
+        }
+        newGrid.push(currentRow);
+    }
+    return newGrid;
+};
