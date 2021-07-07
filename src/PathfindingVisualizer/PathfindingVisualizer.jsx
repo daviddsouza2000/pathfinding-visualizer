@@ -201,8 +201,15 @@ export default function PathfindingVisualizer() {
                         <button onClick={() => visualizeAStar()}>
                             A* Algorithm
                         </button>
+                    </div>
+                </div>
+                <div className="dropdown">
+                    <button className="dropbtn">Maze Generation Algorithm  
+                    <i className="fa fa-caret-down"></i>
+                    </button>
+                    <div className="dropdown-content">
                         <button onClick={() => generateMaze()}>
-                            Maze
+                            Recursive Backtracking
                         </button>
                     </div>
                 </div>
