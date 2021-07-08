@@ -4,6 +4,7 @@ import { dijkstra, getNodesInShortestPathOrderDijkstra } from '../algorithms/dij
 import { bfs, getNodesInShortestPathOrderBfs } from '../algorithms/bfs';
 import { dfs, getNodesInShortestPathOrderDfs } from '../algorithms/dfs';
 import { astar, getNodesInShortestPathOrderAstar} from '../algorithms/astar';
+import { backtracking } from '../mazes/backtrackingDfs';
 
 import './PathfindingVisualizer.css';
 
@@ -131,6 +132,42 @@ export default function PathfindingVisualizer() {
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
+    const generateMaze = () => {
+        if(!canDraw) return;
+        setCanDraw(false);
+        const newGrid = getInitialGridWithAllWalls(grid);
+        for (let row = 0; row < GRID_ROWS; row++) {
+            for (let col = 0; col < GRID_COLS; col++) {
+                const node = document.getElementById(`node-${row}-${col}`);
+                node.classList.add('node-wall');
+            }
+        }
+        const startNode = grid[START_NODE_ROW][START_NODE_COL];
+        const visitedNodesInOrder = backtracking(newGrid, startNode);
+        animateMaze(visitedNodesInOrder);
+    }
+
+    const animateMaze = (visitedNodesInOrder) => {
+        const newGrid = getInitialGridWithAllWalls(grid);
+        for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+            if (i === visitedNodesInOrder.length) {
+                setTimeout(() => {
+                    const { row, col } = visitedNodesInOrder[Math.floor(Math.random() * visitedNodesInOrder.length)];
+                    const newGrid2 = getNewGridWithFinishNodeToggled(newGrid, row, col);
+                    setGrid(newGrid2);
+                    setCanDraw(true);
+                }, 10 * (i+1));
+                return;
+            }
+            setTimeout(() => {
+                const node = visitedNodesInOrder[i];
+                document.getElementById(`node-${node.row}-${node.col}`).classList.remove('node-wall');
+                newGrid[node.row][node.col].isWall = false;
+            }, 10 * i);
+        }
+    }
+
+
     const clearGrid = (clearWalls=false) => {
         setCanDraw(true);
         const newGrid = clearWalls ? getInitialGrid() : getInitialGridWithWalls(grid);
@@ -163,6 +200,16 @@ export default function PathfindingVisualizer() {
                         </button>
                         <button onClick={() => visualizeAStar()}>
                             A* Algorithm
+                        </button>
+                    </div>
+                </div>
+                <div className="dropdown">
+                    <button className="dropbtn">Maze Generation Algorithm  
+                    <i className="fa fa-caret-down"></i>
+                    </button>
+                    <div className="dropdown-content">
+                        <button onClick={() => generateMaze()}>
+                            Recursive Backtracking
                         </button>
                     </div>
                 </div>
@@ -292,6 +339,18 @@ const getInitialGridWithWalls = (grid) => {
         for (let col = 0; col < GRID_COLS; col++) {
             nodeIsWall = grid[row][col].isWall
             currentRow.push(createNode(col, row, nodeIsWall));
+        }
+        newGrid.push(currentRow);
+    }
+    return newGrid;
+};
+
+const getInitialGridWithAllWalls = (grid) => {
+    const newGrid = [];
+    for (let row = 0; row < GRID_ROWS; row++) {
+        const currentRow = [];
+        for (let col = 0; col < GRID_COLS; col++) {
+            currentRow.push(createNode(col, row, true));
         }
         newGrid.push(currentRow);
     }
