@@ -39,6 +39,7 @@ export function astar(grid, startNode, finishNode){
         closed.push(current);
         sortNodesByDistance(open);
     }
+    return visitedNodesInOrder;
 }
 
 function sortNodesByDistance(unvisitedNodes) {

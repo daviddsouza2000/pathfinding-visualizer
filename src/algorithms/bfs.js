@@ -21,6 +21,7 @@ export function bfs(grid, startNode, finishNode) {
         }
         queue.push(...unvisitedNeighbors);
     }
+    return visitedNodesInOrder;
 }
 
 function getUnvisitedNeighbors(node, grid) {

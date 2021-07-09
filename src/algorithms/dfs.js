@@ -21,6 +21,7 @@ export function dfs(grid, startNode, finishNode) {
         }
         stack.push(...unvisitedNeighbors);
     }
+    return visitedNodesInOrder;
 }
 
 function getUnvisitedNeighbors(node, grid) {
