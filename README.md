@@ -1,10 +1,19 @@
 # Pathfinding Visualizer
 
-Link to project: <https://daviddsouza2000.github.io/pathfinding-visualizer/>
+Project hosted at: <https://daviddsouza2000.github.io/pathfinding-visualizer/>
 
-Pathfinding Visualizer project based on [Clement's Youtube Video](https://www.youtube.com/watch?v=msttfIHHkak).
+Visualize pathfinding algorithms on a 2D grid.
 
-# Getting Started with Create React App
+Algorithms:
+
+- Dijkstra's Algorithm
+- Breadth First Search
+- Depth First Search
+- A* Algorithm
+
+Maze Generation Algorithms:
+
+- Recursive Backtracking
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
