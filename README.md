@@ -14,6 +14,7 @@ Algorithms:
 Maze Generation Algorithms:
 
 - Recursive Backtracking
+- Randomized Prim's Algorithm
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
