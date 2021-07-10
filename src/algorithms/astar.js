@@ -60,13 +60,3 @@ function getNeighbors(grid, node, open, closed) {
 function calculateDistance(node1, node2) {
     return Math.abs(node1.col - node2.col) + Math.abs(node1.row - node2.row);
 }
-
-export function getNodesInShortestPathOrderAstar(finishNode) {
-    const nodesInShortestPathOrder = [];
-    let currentNode = finishNode;
-    while (currentNode !== null) {
-        nodesInShortestPathOrder.unshift(currentNode);
-        currentNode = currentNode.previousNode;
-    }
-    return nodesInShortestPathOrder;
-}

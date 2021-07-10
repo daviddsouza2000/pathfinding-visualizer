@@ -11,9 +11,7 @@ export function backtracking(grid, startNode) {
     stack.push(neighbors[rnd]);
 
     while (stack.length) {
-        let batch = stack[stack.length - 1];
-        let frontier = batch[1];
-        let inBetween = batch[0];
+        let [inBetween, frontier] = stack[stack.length - 1];
         frontier.isWall = false;
         visitedNodesInOrder.push(frontier);
         

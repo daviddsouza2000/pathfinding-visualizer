@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Node from './Node/Node';
-import { dijkstra, getNodesInShortestPathOrderDijkstra } from '../algorithms/dijkstra';
-import { bfs, getNodesInShortestPathOrderBfs } from '../algorithms/bfs';
-import { dfs, getNodesInShortestPathOrderDfs } from '../algorithms/dfs';
-import { astar, getNodesInShortestPathOrderAstar} from '../algorithms/astar';
+import { dijkstra, getNodesInShortestPathOrder } from '../algorithms/dijkstra';
+import { bfs } from '../algorithms/bfs';
+import { dfs } from '../algorithms/dfs';
+import { astar } from '../algorithms/astar';
 import { backtracking } from '../mazes/backtrackingDfs';
 import { primMaze } from '../mazes/prim';
 
@@ -69,7 +69,7 @@ export default function PathfindingVisualizer() {
         setMouseIsPressed(false);
     }
 
-    const animateDijkstra = (visitedNodesInOrder, nodesInShortestPathOrder) => {
+    const animateAlgorithm = (visitedNodesInOrder, nodesInShortestPathOrder) => {
         for (let i = 0; i <= visitedNodesInOrder.length; i++) {
             if (i === visitedNodesInOrder.length) {
                 setTimeout(() => {
@@ -93,44 +93,32 @@ export default function PathfindingVisualizer() {
         }
     }
 
-    const visualizeDijkstra = () => {
+    const visualizeAlgorithm = (algorithm) => {
         if(!canDraw) return;
         setCanDraw(false);
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
         const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrderDijkstra(finishNode);
-        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    }
-
-    const visualizeBfs = () => {
-        if(!canDraw) return;
-        setCanDraw(false);
-        const startNode = grid[START_NODE_ROW][START_NODE_COL];
-        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = bfs(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrderBfs(finishNode);
-        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    }
-
-    const visualizeDfs = () => {
-        if(!canDraw) return;
-        setCanDraw(false);
-        const startNode = grid[START_NODE_ROW][START_NODE_COL];
-        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = dfs(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrderDfs(finishNode);
-        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    }
-
-    const visualizeAStar = () => {
-        if(!canDraw) return;
-        setCanDraw(false);
-        const startNode = grid[START_NODE_ROW][START_NODE_COL];
-        const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
-        const visitedNodesInOrder = astar(grid, startNode, finishNode);
-        const nodesInShortestPathOrder = getNodesInShortestPathOrderAstar(finishNode);
-        animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+        
+        var visitedNodesInOrder;
+        switch(algorithm){
+            case "dijkstra":
+                visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+                break;
+            case "bfs":
+                visitedNodesInOrder = bfs(grid, startNode, finishNode);
+                break;
+            case "dfs":
+                visitedNodesInOrder = dfs(grid, startNode, finishNode);
+                break;
+            case "astar":
+                visitedNodesInOrder = astar(grid, startNode, finishNode);
+                break;
+            default:
+                visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+                break;
+        }
+        const nodesInShortestPathOrder = getNodesInShortestPathOrder(finishNode);
+        animateAlgorithm(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
     const generateMaze = (algorithm) => {
@@ -201,16 +189,16 @@ export default function PathfindingVisualizer() {
                     <i className="fa fa-caret-down"></i>
                     </button>
                     <div className="dropdown-content">
-                        <button onClick={() => visualizeDijkstra()}>
+                        <button onClick={() => visualizeAlgorithm("dijkstra")}>
                             Dijkstra's Algorithm
                         </button>
-                        <button onClick={() => visualizeBfs()}>
+                        <button onClick={() => visualizeAlgorithm("bfs")}>
                             Breadth First Search
                         </button>
-                        <button onClick={() => visualizeDfs()}>
+                        <button onClick={() => visualizeAlgorithm("dfs")}>
                             Depth First Search
                         </button>
-                        <button onClick={() => visualizeAStar()}>
+                        <button onClick={() => visualizeAlgorithm("astar")}>
                             A* Algorithm
                         </button>
                     </div>

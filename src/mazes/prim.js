@@ -10,10 +10,7 @@ export function primMaze(grid, startNode) {
 
     while (lst.length) {
         let rnd = Math.floor(Math.random() * lst.length);
-        let batch = lst[rnd];
-        
-        let frontier = batch[1];
-        let inBetween = batch[0];
+        let [inBetween, frontier] = lst[rnd];
         lst.splice(rnd,1);
 
         if(frontier.isWall){
