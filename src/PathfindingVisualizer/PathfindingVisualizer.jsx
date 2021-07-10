@@ -5,6 +5,7 @@ import { bfs, getNodesInShortestPathOrderBfs } from '../algorithms/bfs';
 import { dfs, getNodesInShortestPathOrderDfs } from '../algorithms/dfs';
 import { astar, getNodesInShortestPathOrderAstar} from '../algorithms/astar';
 import { backtracking } from '../mazes/backtrackingDfs';
+import { primMaze } from '../mazes/prim';
 
 import './PathfindingVisualizer.css';
 
@@ -132,7 +133,7 @@ export default function PathfindingVisualizer() {
         animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     }
 
-    const generateMaze = () => {
+    const generateMaze = (algorithm) => {
         if(!canDraw) return;
         setCanDraw(false);
         const newGrid = getInitialGridWithAllWalls(grid);
@@ -143,7 +144,18 @@ export default function PathfindingVisualizer() {
             }
         }
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
-        const visitedNodesInOrder = backtracking(newGrid, startNode);
+
+        var visitedNodesInOrder;
+        switch(algorithm){
+            case "backtracking":
+                visitedNodesInOrder = backtracking(newGrid, startNode);
+                break;
+            case "prim":
+                visitedNodesInOrder = primMaze(newGrid, startNode);
+                break;
+            default:
+                visitedNodesInOrder = backtracking(newGrid, startNode);
+        }
         animateMaze(visitedNodesInOrder);
     }
 
@@ -208,8 +220,11 @@ export default function PathfindingVisualizer() {
                     <i className="fa fa-caret-down"></i>
                     </button>
                     <div className="dropdown-content">
-                        <button onClick={() => generateMaze()}>
+                        <button onClick={() => generateMaze("backtracking")}>
                             Recursive Backtracking
+                        </button>
+                        <button onClick={() => generateMaze("prim")}>
+                            Randomized Prim's Algorithm
                         </button>
                     </div>
                 </div>
