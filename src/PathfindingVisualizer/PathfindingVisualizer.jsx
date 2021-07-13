@@ -14,8 +14,8 @@ var START_NODE_COL = 15;
 var FINISH_NODE_ROW = 10;
 var FINISH_NODE_COL = 35;
 
-const GRID_ROWS = 20;
-const GRID_COLS = 40;
+var GRID_ROWS = 20;
+var GRID_COLS = 40;
 
 export default function PathfindingVisualizer() {
     const [grid, setGrid] = useState([]);
@@ -23,6 +23,8 @@ export default function PathfindingVisualizer() {
     const [canDraw, setCanDraw] = useState(true); // true if visualizer is run/ already ran to disable creating walls
     const [movingStartNode, setMovingStartNode] = useState(false); // if user is moving start node
     const [movingFinishNode, setMovingFinishNode] = useState(false); // if user is moving finish node
+    const [gridRows, setGridRows] = useState(20);
+    const [gridCols, setGridCols] = useState(40);
 
     useEffect(() => {
         const newGrid = getInitialGrid();
@@ -181,6 +183,24 @@ export default function PathfindingVisualizer() {
         }
     }
 
+    const handleRowSlider = (event) => {
+        if(!canDraw) return;
+        clearGrid(true);
+        const newRowNum = event.target.value
+        setGridRows(newRowNum);
+        const newGrid = getNewGridWithRowsToggled(newRowNum);
+        setGrid(newGrid);
+    }
+
+    const handleColSlider = (event) => {
+        if(!canDraw) return;
+        clearGrid(true);
+        const newColNum = event.target.value
+        setGridCols(newColNum);
+        const newGrid = getNewGridWithColsToggled(newColNum);
+        setGrid(newGrid);
+    }
+
     return (
         <>
             <nav className="navbar">
@@ -218,6 +238,12 @@ export default function PathfindingVisualizer() {
                 </div>
                 <button className="clearButton" onClick={() => clearGrid()}>Clear Path</button>
                 <button className="clearButton" onClick={() => clearGrid(true)}>Clear Path and Walls</button>
+                <div className="sliders-div">
+                    <label for="gridRows">Rows: {gridRows} </label>
+                    <input id="gridRows" type="range" min="5" max="30" value={gridRows} step="1" onChange={handleRowSlider}/>
+                    <label for="gridCols">Columns: {gridCols} </label>
+                    <input id="gridCols" type="range" min="5" max="60" value={gridCols} step="1" onChange={handleColSlider}/>
+                </div>
             </nav>
             <br />
 
@@ -359,3 +385,27 @@ const getInitialGridWithAllWalls = (grid) => {
     }
     return newGrid;
 };
+
+const getNewGridWithRowsToggled = (newRowNum) => {
+    if (START_NODE_ROW >= newRowNum){
+        START_NODE_ROW = newRowNum-1;
+    }
+    if (FINISH_NODE_ROW >= newRowNum){
+        FINISH_NODE_ROW = newRowNum-1;
+    }
+    GRID_ROWS = newRowNum;
+    const newGrid = getInitialGrid();
+    return newGrid;
+}
+
+const getNewGridWithColsToggled = (newColNum) => {
+    if (START_NODE_COL >= newColNum){
+        START_NODE_COL = newColNum-1;
+    }
+    if (FINISH_NODE_COL >= newColNum){
+        FINISH_NODE_COL = newColNum-1;
+    }
+    GRID_COLS = newColNum;
+    const newGrid = getInitialGrid();
+    return newGrid;
+}
